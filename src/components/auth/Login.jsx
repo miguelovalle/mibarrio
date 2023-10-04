@@ -37,7 +37,7 @@ export const Login = () => {
   const [hasMail, setHasMail] = useState(false); //enabled/disabled the usequery
 
   const { data, isSuccess } = useLogin(mail, hasMail);
-
+  console.log("data", data);
   const handleClick = () => setshow(!show);
 
   const onSubmit = (e) => {
@@ -48,6 +48,7 @@ export const Login = () => {
   if (isSuccess === true) {
     if (data?.ok === true) {
       localStorage.setItem("id", data?.id);
+      localStorage.setItem("name", data?.firstName);
       localStorage.setItem("address", data?.address[0]?.address);
       const coord = JSON.stringify(data?.address[0]?.coords);
       localStorage.setItem("coords", coord);
@@ -69,7 +70,7 @@ export const Login = () => {
                     children={<BiEnvelope />}
                   />
                   <Input
-                    type="text"
+                    type="email"
                     placeholder="Correo Electrónico"
                     borderColor="gray.400"
                     {...register("email", {

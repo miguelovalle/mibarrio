@@ -73,11 +73,12 @@ export const BtnAddress = ({ setCoords }) => {
       <Drawer
         isOpen={isOpen}
         placement="right"
+        idfullheight={false}
         onClose={onClose}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent background={"orange.100"}>
+        <DrawerContent background={"orange.200"}>
           <DrawerCloseButton />
           <DrawerHeader>Seleccione Una Dirección</DrawerHeader>
 

@@ -1,20 +1,32 @@
-import { Container, IconButton } from "@chakra-ui/react";
+import {
+  Flex,
+  HStack,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Spacer,
+} from "@chakra-ui/react";
 import { SlMagnifier } from "react-icons/sl";
+import { BtnCar } from "./BtnCar";
+
 export const BtnSearch = () => {
   return (
-    <Container>
+    <Flex align={"center"}>
       <a href="/searchtext">
-        <input
-          type="search"
-          color="black "
-          placeholder="Que quieres encontrar..."
-        />
-        <IconButton
-          colorScheme="blue"
-          aria-label="Search database"
-          icon={<SlMagnifier />}
-        />
+        <InputGroup>
+          <InputRightElement pointerEvents="none">
+            <SlMagnifier />
+          </InputRightElement>
+          <Input
+            type="search"
+            size={"md"}
+            color="black "
+            variant={"filled"}
+            placeholder="Que quieres encontrar..."
+          />
+        </InputGroup>
       </a>
-    </Container>
+      <BtnCar />
+    </Flex>
   );
 };

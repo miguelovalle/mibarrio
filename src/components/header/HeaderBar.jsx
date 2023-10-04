@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { BtnBack } from "../header/BtnBack";
 import { BtnAddress } from "../header/BtnAddress";
 import { BtnSearch } from "./BtnSearch";
 import { useUserDetail } from "../../hooks/loginHooks";
-import { FiShoppingBag } from "react-icons/fi";
 import { Categories } from "../comercio/Categories";
-import { BtnReach } from "../header/BtnReach";
+
+//import { BtnReach } from "../header/BtnReach";
+
 export const HeaderBar = () => {
   const [category, setCategory] = useState("Restaurantes");
 
@@ -30,29 +31,31 @@ export const HeaderBar = () => {
   !coords && navigate("/landing");
 
   return (
-    <Box>
+    <>
       <Flex
-        as="nav"
         align="center"
         justify="space-between"
         wrap="wrap"
-        w="100%"
-        mb={8}
+        w={["30rem", "48rem", "62rem", "80rem", "100%"]}
+        my={12}
         p={8}
         bg="orange.400"
-        color={"black"}
+        color={"blue.600"}
       >
         <BtnBack />
         <BtnAddress setCoords={setCoords} />
-        <BtnReach setReach={setReach} />
+        <Box as="nav">
+          <HStack display={{ base: "none", md: "flow" }}>
+            <Link to={"/login"}>ingresar</Link>
+            <Link to={"/registro"}>Actualiza Perfil</Link>
+          </HStack>
+        </Box>
+
         <BtnSearch />
-        <Link to={"/login"}>ingresar</Link>
-        <Link to={"/registro"}>Actualiza Perfil</Link>
-        <FiShoppingBag size={30} />
       </Flex>
       <Categories setCategory={setCategory} />
 
       <Outlet context={query} />
-    </Box>
+    </>
   );
 };

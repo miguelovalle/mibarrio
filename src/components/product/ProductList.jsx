@@ -9,11 +9,7 @@ import {
   Card,
   CardBody,
   CardFooter,
-  Stack,
-  StackDivider,
-  Box,
   Button,
-  Container,
 } from "@chakra-ui/react";
 
 import { useProducts } from "../../hooks/productHooks";
@@ -45,8 +41,24 @@ export const ProductList = () => {
 
   const [showDialog, setShowDialog] = useState(false);
 
+  const ordDay = new Date().getDay();
+
+  let forSale;
+
   const { isLoading, data, isError, isSuccess, error } = useProducts(shopId);
+
   const products = data?.products;
+
+  // products available for sale according to the day of the week
+  const filteredProducts = products?.filter((product) => {
+    if (product.daysno.length === 0) {
+      return product;
+    } else {
+      forSale = product.daysno.includes(ordDay);
+      if (!forSale) return product;
+    }
+  });
+
   const closeModal = () => setShowModal(false);
 
   const closeDialog = () => setShowDialog(false);
@@ -69,51 +81,47 @@ export const ProductList = () => {
       return console.log("no hay productos para mostrar");
     } else {
       return (
-        <Container>
+        <Flex wrap={"wrap"} justifyContent={"center"} p={5}>
           <Card>
             <CardBody>
-              <Stack divider={<StackDivider />} spacing="4">
-                <Box>
-                  <Flex wrap="wrap">
-                    {products?.map((item) => (
-                      <Flex
-                        key={item._id}
-                        justify="flex-start"
-                        w="400px"
-                        bg="orange.100"
-                        border="1px solid tomato.200"
-                        padding={5}
-                        m="0.5"
-                      >
-                        <a
-                          href="#"
-                          onClick={() => {
-                            setProduct(item);
-                            setShowModal(true);
-                          }}
-                        >
-                          <Flex w="400px">
-                            <Image
-                              boxSize="100px"
-                              objectFit="cover"
-                              borderRadius="lg"
-                              src={item.logo}
-                              alt={item.logo}
-                            />
-                            <VStack w="300px">
-                              <Text fontSize="xl">{item.name}</Text>
-                              <Text fontSize="small">{item.description}</Text>
-                              <Text fontSize="small">
-                                {numberFormat(item.price)}
-                              </Text>
-                            </VStack>
-                          </Flex>
-                        </a>
+              <Flex wrap="wrap">
+                {filteredProducts?.map((item) => (
+                  <Flex
+                    key={item._id}
+                    justify="flex-start"
+                    w="400px"
+                    bg="gray.100"
+                    border="1px solid tomato.200"
+                    padding={5}
+                    m="0.5"
+                  >
+                    <a
+                      href="#"
+                      onClick={() => {
+                        setProduct(item);
+                        setShowModal(true);
+                      }}
+                    >
+                      <Flex w="400px">
+                        <Image
+                          boxSize="100px"
+                          objectFit="cover"
+                          borderRadius="lg"
+                          src={item.logo}
+                          alt={item.logo}
+                        />
+                        <VStack w="300px">
+                          <Text fontSize="xl">{item.name}</Text>
+                          <Text fontSize="small">{item.description}</Text>
+                          <Text fontSize="small">
+                            {numberFormat(item.price)}
+                          </Text>
+                        </VStack>
                       </Flex>
-                    ))}
+                    </a>
                   </Flex>
-                </Box>
-              </Stack>
+                ))}
+              </Flex>
             </CardBody>
 
             <Flex direction="column" w="full"></Flex>
@@ -133,11 +141,12 @@ export const ProductList = () => {
               onClose={closeModal}
               orderList={orderList}
               setOrderList={setOrderList}
+              subTotal={subTotal}
               setSubTotal={setSubTotal}
               setshowTotal={setshowTotal}
             />
           </Card>
-        </Container>
+        </Flex>
       );
     }
   }

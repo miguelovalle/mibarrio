@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   Modal,
   ModalCloseButton,
@@ -10,21 +9,20 @@ import {
   Flex,
   Spacer,
   Box,
-  HStack,
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   VStack,
-  Checkbox,
   Button,
-  Heading,
   Text,
   ButtonGroup,
 } from "@chakra-ui/react";
 
 import { numberFormat } from "../../components/helpers/numberFormat";
 import { useEffect } from "react";
+import { RendChecks } from "./render/RendChecks";
+import { RendRadio } from "./render/RendRadio";
+import { RendBtn } from "./render/RendBtn";
 
 export const ModalProduct = ({
   product,
@@ -32,101 +30,44 @@ export const ModalProduct = ({
   onClose,
   orderList,
   setOrderList,
+  subTotal,
   setSubTotal,
   setshowTotal,
 }) => {
-  const price = Number(product?.price);
-  const [orderTotal, setOrderTotal] = useState(0);
+  //  const [order, dispatch] = useReducer(orderReducer, [[], [], []]);
+  const [order, setOrder] = useState([[], [], []]);
+  const [orderSum, setOrderSum] = useState(0);
   const [orderCount, setOrderCount] = useState(1);
-  const [listBtn, setlistBtn] = useState([]);
-  //const [listOne, setListOne] = useState([]);
-  //const [listCheck, setListCheck] = useState([]);
+  const price = Number(product?.price);
+  let initState = [];
 
-  let itemsCount = 0;
-  let foundElements = false;
-  let listAux = [];
-  let auxCheck = [];
-  let listOne = [];
+  const stateList = (element) => {
+    initState = [];
+    element?.map((item) => {
+      newValue = {
+        id: item.id,
+        item: item.name,
+        price: item.price,
+        check: false,
+        total: 0,
+      };
+      return initState.push(newValue);
+    });
+  };
 
   useEffect(() => {
-    setOrderTotal(price);
+    setOrderSum(price);
   }, [price]);
-
-  const handleRadio = (subElement) => {
-    listOne.length > 0 &&
-      Number(subElement.price) > 0 &&
-      setOrderTotal(orderTotal - Number(subElement.price));
-    listOne = [];
-    listOne.push(subElement.item);
-    //    setListOne([subElement.item]);
-    Number(subElement.price) > 0 &&
-      setOrderTotal(orderTotal + Number(subElement.price));
-  };
-
-  const handleCheck = (e, price, subElement) => {
-    setOrderTotal(price);
-    const validaCheck = e.target.checked;
-    const valIndex = auxCheck.indexOf(subElement.item);
-    if (validaCheck && valIndex === -1) {
-      itemsCount = itemsCount + 1;
-      auxCheck.push(subElement.item);
-      //      setListCheck([...auxCheck]);
-    }
-    if (!validaCheck && valIndex > -1) {
-      itemsCount = itemsCount - 1;
-      auxCheck.splice(valIndex, 1);
-      //setListCheck([...auxCheck]);
-    }
-  };
-
-  const handleRestBtn = (subElement, price) => {
-    const listAux = [...listBtn];
-    if (subElement.total > 0 && orderTotal > price) {
-      listAux.forEach((element) => {
-        if (subElement.item === element.item) {
-          element.cantidad = element.cantidad - 1;
-        }
-      });
-      setlistBtn([...listAux]);
-      subElement.total = subElement.total - 1;
-      setOrderTotal(orderTotal - Number(subElement.price));
-    }
-  };
-
-  const handleSumBtn = (subElement) => {
-    foundElements = false;
-    listAux = [...listBtn];
-    listAux.forEach((element) => {
-      if (subElement.item === element.item) {
-        element.cantidad = element.cantidad + 1;
-        foundElements = true;
-      }
-    });
-    !foundElements &&
-      listAux.push({
-        cantidad: subElement.total + 1,
-        item: subElement.item,
-      });
-    setlistBtn([...listAux]);
-
-    subElement.total = subElement.total + 1;
-    setOrderTotal(orderTotal + Number(subElement?.price));
-  };
+  let newValue;
 
   const handleOrder = () => {
     const element = {
       cantidad: orderCount,
       item: product?.name,
-      price: product?.price,
+      price: orderSum,
     };
-    let aggs = [];
-    aggs.push(...listOne, ...auxCheck);
-    let adds = [];
-    adds.push(...listBtn);
-    let auxList = [];
-    auxList.push(element, aggs, adds);
-    setOrderList([...orderList, auxList]);
-    setSubTotal(orderTotal);
+    setOrderList([...orderList, [element, ...order]]);
+    setSubTotal(subTotal + orderSum);
     setshowTotal("inline");
     onClose();
   };
@@ -137,93 +78,75 @@ export const ModalProduct = ({
       <ModalContent>
         <ModalCloseButton />
 
-        <ModalBody>
-          <Flex direction={"column"} mt={6}>
+        <ModalBody mt={5}>
+          <Flex direction={"column"}>
             <Flex direction={"row"} justifyContent="flex-start">
-              <Box
-                my={15}
-                maxW={"35em"}
-                borderWidth="1px"
-                borderRadius="lg"
-                fontSize={"xl"}
-              >
+              <Box my={15} flexWrap={"wrap"} fontSize={"xl"}>
                 {product?.name}
               </Box>
               <Spacer />
               <Box my={15}>{numberFormat(product?.price)}</Box>
             </Flex>
-
             {product?.description}
+            {/*loop over the product aggregates*/}
             {product?.aggregates?.map((element, indexL1) => (
-              <Card key={indexL1}>
+              <Card key={indexL1} my={5}>
                 <CardHeader>
-                  <Box bg={"orange.400"} color={"white"}>
-                    {element[0].title}
+                  <Box
+                    bg={"orange.400"}
+                    color={"white"}
+                    borderRadius="lg"
+                    p={4}
+                  >
+                    <VStack direction={"column"}>
+                      <Text>{element[0].title}</Text>
+                      {Number(element[0].minItemsNum) > 0 && (
+                        <Text>
+                          Seleccion obligatoria de mínimo{" "}
+                          {element[0].minItemsNum}{" "}
+                        </Text>
+                      )}
+                      {Number(element[0].maxItemsNum) > 0 && (
+                        <Text>
+                          Seleccion obligatoria de máximo{" "}
+                          {element[0].maxItemsNum}{" "}
+                        </Text>
+                      )}{" "}
+                      <Text size={"sm"}>{element[0].subtitle} </Text>
+                    </VStack>
                   </Box>
-
-                  <Spacer />
-                  {Number(element[0].minItemsNum) > 0 ||
-                  Number(element[0].maxItemsNum) > 0 ? (
-                    <Text bg={"orange.400"} color={"white"}>
-                      Obligatorio
-                    </Text>
-                  ) : (
-                    ""
-                  )}
                 </CardHeader>
                 <CardBody>
-                  <Heading size={"md"}>{element[0].subtitle} </Heading>
-                  {element[1]?.map((subElement, indexL2) => (
-                    <VStack key={indexL2}>
-                      <HStack>
-                        <Box>{subElement.item}</Box>
-                        <Spacer />
-                        <Box>
-                          {Number(element[0].maxItemsNum) === 1 ? (
-                            <input
-                              type={"radio"}
-                              name="opc"
-                              onChange={() => {
-                                handleRadio(subElement);
-                              }}
-                            />
-                          ) : Number(element[0].maxItemsNum) !== 1 &&
-                            subElement.price > 0 ? (
-                            <ButtonGroup isAttached mx={30} variant="outline">
-                              <Button
-                                onClick={() => {
-                                  handleRestBtn(subElement, product?.price);
-                                }}
-                              >
-                                -
-                              </Button>
-                              <Text>{subElement.total} </Text>
-                              <Button
-                                onClick={() => {
-                                  handleSumBtn(subElement);
-                                }}
-                              >
-                                {" "}
-                                +{" "}
-                              </Button>
-                            </ButtonGroup>
-                          ) : (
-                            <Checkbox
-                              colorScheme="orange"
-                              onChange={(e) => {
-                                handleCheck(e, price, subElement);
-                              }}
-                            />
-                          )}
-                        </Box>
-                      </HStack>
-                      <Box>
-                        {subElement.price > 0 && numberFormat(subElement.price)}
-                      </Box>
-                    </VStack>
-                  ))}
+                  {/*calculate the init state of items selected*/}
+                  {stateList(element[1])}
+                  {element[0].typeSelect === "radio" && (
+                    <RendRadio
+                      option={element[0].title.slice(0, 6)}
+                      init={initState}
+                      order={order}
+                      setOrder={setOrder}
+                      orderSum={orderSum}
+                      setOrderSum={setOrderSum}
+                    />
+                  )}
+                  {element[0].typeSelect === "checkbox" && (
+                    <RendChecks
+                      init={initState}
+                      max={element[0].maxItemsNum}
+                      order={order}
+                      setOrder={setOrder}
+                    />
+                  )}
+                  {element[0].typeSelect === "Btn" && (
+                    <RendBtn
+                      init={initState}
+                      order={order}
+                      setOrder={setOrder}
+                      orderSum={orderSum}
+                      setOrderSum={setOrderSum}
+                    />
+                  )}
                 </CardBody>
-                <CardFooter></CardFooter>
               </Card>
             ))}
           </Flex>
@@ -233,9 +156,9 @@ export const ModalProduct = ({
           <ButtonGroup isAttached mx={30} variant="outline">
             <Button
               onClick={() => {
-                if (orderCount > 1) {
+                if (orderCount > 1 && orderSum > price) {
                   setOrderCount(orderCount - 1);
-                  setOrderTotal(orderTotal - price);
+                  setOrderSum(orderSum - price);
                 }
               }}
             >
@@ -244,13 +167,13 @@ export const ModalProduct = ({
             <Button
               onClick={() => {
                 setOrderCount(orderCount + 1);
-                setOrderTotal(orderTotal + price);
+                setOrderSum(orderSum + price);
               }}
             >{`${orderCount} +`}</Button>
           </ButtonGroup>
 
           <Button onClick={() => handleOrder()}>{`agregar ${numberFormat(
-            orderTotal
+            orderSum
           )}`}</Button>
         </ModalFooter>
       </ModalContent>

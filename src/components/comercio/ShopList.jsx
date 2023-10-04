@@ -29,13 +29,13 @@ export const ShopList = () => {
             <Flex
               key={negocio._id}
               justify="flex-start"
-              w="400px"
-              bg="orange.100"
+              minW={450}
+              bg="gray.100"
               border="1px solid tomato.200"
               padding={5}
               m="0.5"
             >
-              <Flex w="400px">
+              <Flex w="450px">
                 <Image
                   boxSize="100px"
                   objectFit="cover"
@@ -44,7 +44,7 @@ export const ShopList = () => {
                   alt={negocio.nombre}
                 />
 
-                <VStack w="300px">
+                <VStack w="350px">
                   <a href={`shops/${negocio._id}`}>
                     {negocio.name}
                     <Text fontSize="small">{negocio.specialty}</Text>

@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useSearch } from "../../hooks/productHooks";
 import {
+  Box,
   Button,
   Container,
   Flex,
   HStack,
   IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
   Spinner,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import { SlMagnifier } from "react-icons/sl";
 import { ModalProduct } from "./ModalProduct";
@@ -59,25 +64,32 @@ export const SearchList = () => {
   };
 
   return (
-    <Container>
-      <BtnBack />
-      <input
-        type="search"
-        color="black "
-        name="q"
-        value={q}
-        onChange={handleChange}
-        placeholder="Que quieres encontrar..."
-      />
-      <IconButton
-        colorScheme="blue"
-        aria-label="Search database"
-        icon={<SlMagnifier />}
-      />
-      <Flex direction={"column"} mt={6}>
+    <Box bg={"gray.200"} minW={470} h={"100vh"}>
+      <VStack mt={4}>
+        <HStack>
+          <BtnBack />
+          <InputGroup>
+            <InputRightElement pointerEvents="none">
+              <SlMagnifier />
+            </InputRightElement>
+            <Input
+              type="search"
+              size={"md"}
+              color="black "
+              name="q"
+              my={2}
+              value={q}
+              onChange={handleChange}
+              variant={"filled"}
+              placeholder="Que quieres encontrar..."
+            />
+          </InputGroup>
+        </HStack>
+
         {isLoading && <Spinner />}
+
         {result?.map((item) => (
-          <HStack key={item._id}>
+          <Box w={480} key={item._id} mt={4}>
             <a
               href="#"
               onClick={() => {
@@ -85,14 +97,22 @@ export const SearchList = () => {
                 setShowModal(true);
               }}
             >
-              <Text>{item.name}</Text>
-              <IconButton
-                onClick={showProduct}
-                colorScheme="blue"
-                aria-label="Search database"
-                icon={<SlMagnifier />}
-              />
-            </a>{" "}
+              <Flex
+                direction={"row"}
+                align={"center"}
+                justify={"space-between"}
+                my={4}
+                w={450}
+              >
+                <Text>{item.name}</Text>
+                <IconButton
+                  onClick={showProduct}
+                  colorScheme="blue"
+                  aria-label="Search database"
+                  icon={<SlMagnifier />}
+                />
+              </Flex>
+            </a>
             <Button
               display={showTotal}
               leftIcon={<IoIosCart />}
@@ -100,7 +120,7 @@ export const SearchList = () => {
             >
               {`Lanzar Pedido por ${numberFormat(subTotal)}`}
             </Button>
-          </HStack>
+          </Box>
         ))}
         <DialogLogin isOpen={showDialog} onClose={closeDialog} />
         <ModalProduct
@@ -112,7 +132,7 @@ export const SearchList = () => {
           setSubTotal={setSubTotal}
           setshowTotal={setshowTotal}
         />
-      </Flex>
-    </Container>
+      </VStack>
+    </Box>
   );
 };

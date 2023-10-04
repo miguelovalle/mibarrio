@@ -10,6 +10,7 @@ import { LandingScreen } from "../components/landing/LandingScreen";
 import { SignUp } from "../components/auth/SignUp";
 import { OrderSheet } from "../components/product/OrderSheet";
 import { SearchList } from "../components/product/SearchList";
+import { Prueba } from "../components/helpers/Prueba";
 
 export const AppRouter = () => {
   return (
@@ -29,6 +30,7 @@ export const AppRouter = () => {
         <Route path="/registro" element={<SignUp />} />
         <Route path="/order" element={<OrderSheet />} />
         <Route path="/searchtext" element={<SearchList />} />
+        <Route path="/prueba" element={<Prueba />} />
       </Routes>
     </BrowserRouter>
   );
