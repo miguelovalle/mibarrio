@@ -12,34 +12,38 @@ import {
   Text,
   VStack,
   useToast,
+  StackDivider,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { numberFormat } from "../../components/helpers/numberFormat";
 import { IoMdReturnLeft } from "react-icons/io";
 import { useMutateAddOrder } from "../../hooks/orderHooks";
 import { useForm } from "react-hook-form";
-
 export const OrderSheet = () => {
   const navigate = useNavigate();
-
   const toast = useToast();
   const result = useMutateAddOrder();
   const { register, handleSubmit } = useForm();
-
   const orderItems = JSON.parse(sessionStorage.getItem("order"));
+  const commerceId = JSON.parse(sessionStorage.getItem("commerceId"));
   const name = localStorage.getItem("name");
   const address = localStorage.getItem("address");
 
   let orderObj = {
     name: name,
+    commerce: commerceId,
     address: address,
     changeMoney: "",
+    dateOrder: +new Date(),
+    changeTime: new Date().getHours() + ":" + new Date().getMinutes(),
+    changeState: "En Cola",
     order: orderItems,
-    dateOrder: new Date(),
   };
 
   const onSubmit = (event) => {
-    orderObj.changeMoney = `Levar cambio de ${event.cash}`;
+    event.cash
+      ? (orderObj.changeMoney = `Levar cambio de ${event.cash}`)
+      : (orderObj.changeMoney = "");
     result.mutate(orderObj, {
       onError: () => {
         toast({
@@ -63,10 +67,16 @@ export const OrderSheet = () => {
   };
 
   return (
-    <Box w={"450px"} justifyContent={"center"} bg={"red"} px={14}>
-      <Card bgColor={"gray.50"} mb={4} justify={"center"}>
+    <Box w={"450px"} px={4}>
+      <Card bgColor={"gray.50"} mb={4}>
         <CardHeader>
-          <Flex bg={"orange.200"} p={4} m={4}>
+          <Flex
+            bg={"orange.200"}
+            p={4}
+            m={4}
+            justifyContent={"center"}
+            align={"center"}
+          >
             <Button
               leftIcon={<IoMdReturnLeft />}
               variant="solid"
@@ -76,7 +86,7 @@ export const OrderSheet = () => {
               onClick={() => navigate(-2)}
             />
             <Spacer />
-            <Heading size="sm" mx={4} color={"blue.700"}>
+            <Heading size="sm" color={"blue.700"}>
               {name} Confirmemos su Pedido
             </Heading>
           </Flex>
@@ -87,36 +97,39 @@ export const OrderSheet = () => {
             display={"flex"}
             justifyContent={"center"}
             flexWrap={"wrap"}
-            fontSize={"sm"}
+            fontSize={"md"}
+            mb={4}
           >
             Entregamos en: {address}
           </Box>
-          <Flex direction={"column"}>
+          <hr />
+          <VStack divider={<StackDivider borderColor="gray.300" />} spacing={4}>
             {orderItems?.map((element, indexL1) => (
               <VStack key={indexL1}>
-                <HStack>
+                <Flex justify={"flex-start"} mt={2}>
                   <Box> {element[0].cantidad} </Box>
                   <Box>{element[0].item} </Box>
+                  <Spacer />
                   <Box>{numberFormat(element[0].price)} </Box>
-                </HStack>
-                <Text
-                  fontSize={"sm"}
-                >{`Con: ${element[1].toString()}  ${element[2].toString()} `}</Text>
+                </Flex>
+                <Box display={"flex"} flexWrap="wrap">
+                  {element[1].length > 0 &&
+                    `Con: ${element[1].toString()}  ${element[2].toString()} `}
+                </Box>
                 {element[3].map((ads, indexL2) => (
                   <HStack key={indexL2}>
                     <Text>{ads.cantidad} </Text>
-                    
                     <Text>{ads.item} </Text>
                   </HStack>
                 ))}
               </VStack>
             ))}
-          </Flex>
+          </VStack>
         </CardBody>
 
         <CardFooter>
           <VStack mb={4} fontSize={"sm"} justify={"center"}>
-            <Box justifyContent={"center"}> Llevar cambio de: </Box>
+            <Box justifyContent={"center"}>Paga con: </Box>
             <form onSubmit={handleSubmit(onSubmit)} my={4}>
               <HStack>
                 <label htmlFor="cien">Cien</label>
@@ -144,6 +157,15 @@ export const OrderSheet = () => {
                   name="cash"
                   value={"20"}
                   id="veinte"
+                />
+
+                <label htmlFor="datafono">Datáfono</label>
+                <input
+                  {...register("cash")}
+                  type="radio"
+                  name="cash"
+                  value={"datafono"}
+                  id="datafono"
                 />
               </HStack>
               <Button type="submit" w={"full"} mt={4} colorScheme="blue">

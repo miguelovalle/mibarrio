@@ -48,7 +48,7 @@ export const Login = () => {
   if (isSuccess === true) {
     if (data?.ok === true) {
       localStorage.setItem("id", data?.id);
-      localStorage.setItem("name", data?.firstName);
+      localStorage.setItem("name", data?.firstName + " " + data?.secondName);
       localStorage.setItem("address", data?.address[0]?.address);
       const coord = JSON.stringify(data?.address[0]?.coords);
       localStorage.setItem("coords", coord);

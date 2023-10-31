@@ -69,6 +69,7 @@ export const ModalProduct = ({
     setOrderList([...orderList, [element, ...order]]);
     setSubTotal(subTotal + orderSum);
     setshowTotal("inline");
+    setOrder([[], [], []]);
     onClose();
   };
 

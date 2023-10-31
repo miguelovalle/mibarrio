@@ -15,7 +15,6 @@ export const RendRadio = ({
     if (auxRadio.length > 0) {
       init.map((element) => {
         idx = auxRadio.indexOf(element.item);
-        console.log(idx);
         idx > -1 && auxRadio.splice(idx, 1);
         idx > -1 && price > 0 && setOrderSum(orderSum - Number(price));
       });

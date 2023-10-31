@@ -7,6 +7,7 @@ import {
   Flex,
   Spacer,
   VStack,
+  StackDivider,
 } from "@chakra-ui/react";
 import { numberFormat } from "../../helpers/numberFormat";
 
@@ -73,9 +74,9 @@ export const RendBtn = ({ init, order, setOrder, orderSum, setOrderSum }) => {
   };
 
   return (
-    <Container>
+    <Container  divider={<StackDivider borderColor='gray.200' />} >
       {stateArray.map((item) => (
-        <VStack key={item.id} fontSize={"sm"} mt={2}>
+        <VStack key={item.id} fontSize={"sm"} mt={2}  >
           <Flex
             justify={"space-between"}
             w={"90%"}

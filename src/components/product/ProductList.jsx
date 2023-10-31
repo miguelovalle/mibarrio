@@ -65,6 +65,7 @@ export const ProductList = () => {
 
   const handleOrder = () => {
     sessionStorage.setItem("order", JSON.stringify(orderList));
+    sessionStorage.setItem("commerceId", JSON.stringify(product.commerce));
     const userid = localStorage.getItem("id");
     userid ? navigate("/order") : setShowDialog(true);
   };

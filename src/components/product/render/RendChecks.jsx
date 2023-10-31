@@ -47,6 +47,7 @@ export const RendChecks = ({ init, max, order, setOrder }) => {
       changeState(id, false);
     }
     setOrder([order[0], [...auxCheck], order[2]]);
+    //limpiar
   };
 
   return (
