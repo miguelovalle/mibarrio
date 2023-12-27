@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useSearch } from "../../hooks/productHooks";
 import {
   Box,
   Button,
-  Container,
   Flex,
   HStack,
   IconButton,
@@ -14,6 +12,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useSearch } from "../../hooks/productHooks";
 import { SlMagnifier } from "react-icons/sl";
 import { ModalProduct } from "./ModalProduct";
 import { IoIosCart } from "react-icons/io";
@@ -50,6 +49,7 @@ export const SearchList = () => {
       [e.target.name]: e.target.value,
     });
   };
+
 
   isSuccess && data?.ok === true ? (result = data?.products) : (result = []);
 

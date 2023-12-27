@@ -16,9 +16,8 @@ import {
 
 import { AddressModal } from "../address/AddressModal";
 import { PageHeader } from "../comercio/PageHeader";
-import { useAdduser } from "../../hooks/loginHooks";
+import { useAdduser, useUserDetail } from "../../hooks/loginHooks";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const SignUp = () => {
   const {
@@ -34,25 +33,25 @@ export const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
+  const userId = localStorage.getItem("id");
 
-  const dataUser = queryClient.getQueryData(["user"]) || {};
-
-  const result = useAdduser();
+  const resultUserbyId = useUserDetail(userId);
 
   const [showModal, setshowModal] = useState(true);
-  // estates to handle edition of profile user
-  const { name, address, phone, email } = dataUser.userInf;
+
+  const resultAddUser = useAdduser();
+
+  // estates to handle edition of profile useruserInf
 
   useEffect(() => {
-    if (!!dataUser.userInf) {
-      setValue("nombres", name.firstName);
-      setValue("apellidos", name.lastName);
-      setValue("email", email);
-      setValue("direccion", address[0].address);
-      setValue("celular", phone);
+    if (resultUserbyId?.data) {
+      setValue("nombres", resultUserbyId?.data.userInf.name.firstName);
+      setValue("apellidos", resultUserbyId?.data.userInf.name.lastName);
+      setValue("email", resultUserbyId?.data.userInf.email);
+      setValue("direccion", resultUserbyId?.data.userInf.address[0].address);
+      setValue("celular", resultUserbyId?.data.userInf.phone);
     }
-  }, [dataUser.userInf]);
+  }, [resultUserbyId]);
 
   const onSubmit = (e) => {
     // construct user oject to send to db
@@ -74,7 +73,7 @@ export const SignUp = () => {
       password: e.password,
     };
 
-    result.mutate(
+    resultAddUser.mutate(
       { user },
       {
         onError: () => {
@@ -108,7 +107,7 @@ export const SignUp = () => {
 
   return (
     <Flex mb={2} p={2}>
-      <Center w="100%">
+      <Center w="480px">
         <VStack>
           <PageHeader pageTitle={"Registro de Nuevo Usuario"} />
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -211,8 +210,9 @@ export const SignUp = () => {
                 </FormErrorMessage>
               </FormControl>
             </Grid>
-            {result.isLoading && <Spinner />}
-            {result.fetchStatus === "fetching" && <Spinner />}
+            {resultUserbyId.isLoading && <Spinner />}
+            {resultAddUser.isLoading && <Spinner />}
+            {resultAddUser.fetchStatus === "fetching" && <Spinner />}
             <HStack mt={4} w={"100%"}>
               <Button type="submit" colorScheme="blue" w={220} size="lg">
                 Registrarse

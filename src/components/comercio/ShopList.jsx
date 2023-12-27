@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Image, Text, Flex, VStack, Spinner } from "@chakra-ui/react";
 import { useShopList } from "../../hooks/shopHooks";
 import { useOutletContext } from "react-router-dom";
+import { Categories } from "../comercio/Categories";
 
 export const ShopList = () => {
   const query = useOutletContext();
-  const { category, setCategory, coords, setcoords, reach, setreach } = query;
+  const [category, setCategory] = useState("Restaurantes");
+  const { coords, setcoords, reach, setreach } = query;
   const { isLoading, isError, data, error, isSuccess } = useShopList(
     category,
     coords,
@@ -24,6 +26,7 @@ export const ShopList = () => {
   if (isSuccess) {
     return (
       <Flex direction="column" w="full">
+        <Categories setCategory={setCategory} />
         <Flex wrap="wrap">
           {shopsFiltered?.map((negocio) => (
             <Flex

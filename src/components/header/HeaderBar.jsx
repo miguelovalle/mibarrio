@@ -1,34 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Flex, HStack } from "@chakra-ui/react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { BtnBack } from "../header/BtnBack";
 import { BtnAddress } from "../header/BtnAddress";
 import { BtnSearch } from "./BtnSearch";
-import { useUserDetail } from "../../hooks/loginHooks";
-import { Categories } from "../comercio/Categories";
+//import { useUserDetail } from "../../hooks/loginHooks";
 
 //import { BtnReach } from "../header/BtnReach";
 
 export const HeaderBar = () => {
-  const [category, setCategory] = useState("Restaurantes");
-
   const coord = JSON.parse(localStorage.getItem("coords"));
 
   const [coords, setCoords] = useState(coord);
 
   const [reach, setReach] = useState(false);
 
-  const query = { category, setCategory, coords, setCoords, reach, setReach };
-
-  const uid = localStorage.getItem("id");
-
-  const id = uid ? uid : "";
+  const query = { coords, setCoords, reach, setReach };
+  
 
   const navigate = useNavigate();
 
-  const result = useUserDetail(id);
-
-  !coords && navigate("/landing");
+  useEffect(() => {
+    coords == null && navigate("/landing");
+  }, [coords]);
 
   return (
     <>
@@ -53,7 +47,6 @@ export const HeaderBar = () => {
 
         <BtnSearch />
       </Flex>
-      <Categories setCategory={setCategory} />
 
       <Outlet context={query} />
     </>

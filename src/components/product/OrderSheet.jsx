@@ -19,11 +19,24 @@ import { numberFormat } from "../../components/helpers/numberFormat";
 import { IoMdReturnLeft } from "react-icons/io";
 import { useMutateAddOrder } from "../../hooks/orderHooks";
 import { useForm } from "react-hook-form";
+import { ProgressOrder } from "./render/ProgressOrder";
+import { useRef, useState } from "react";
+
 export const OrderSheet = () => {
   const navigate = useNavigate();
-  const toast = useToast();
-  const result = useMutateAddOrder();
+
+  let order = localStorage.getItem("orderId");
+
+  const [dsblConfirm, setDsblConfirm] = useState(false);
+
+  const orderId = useRef(order);
+
+  const mutation = useMutateAddOrder();
+
   const { register, handleSubmit } = useForm();
+
+  const toast = useToast();
+
   const orderItems = JSON.parse(sessionStorage.getItem("order"));
   const commerceId = JSON.parse(sessionStorage.getItem("commerceId"));
   const name = localStorage.getItem("name");
@@ -40,11 +53,23 @@ export const OrderSheet = () => {
     order: orderItems,
   };
 
+  if (mutation.isSuccess) {
+    //    console.log(mutation.data.orderId);
+    //    localStorage.setItem("orderId", mutation?.data?.orderId);
+    orderId.current = mutation?.data?.orderId;
+    localStorage.setItem("orderId", orderId.current);
+    //setOrderId(mutation?.data?.orderId);
+    //orderId = mutation?.data?.orderId;
+    //setHasOrder(true);
+  }
+  //orderId && setDsblConfirm(true);
+
   const onSubmit = (event) => {
     event.cash
-      ? (orderObj.changeMoney = `Levar cambio de ${event.cash}`)
+      ? (orderObj.changeMoney = `Paga con: ${event.cash}`)
       : (orderObj.changeMoney = "");
-    result.mutate(orderObj, {
+
+    mutation.mutate(orderObj, {
       onError: () => {
         toast({
           title: "Inténtelo nuevamente",
@@ -54,17 +79,28 @@ export const OrderSheet = () => {
         });
       },
       onSuccess: () => {
-        result.data === "ok" &&
-          toast({
-            title: "La orden entra en proceso",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          });
-        navigate("/");
+        //const orderId = result.data.idOrder
+        return toast({
+          title: "La orden entra en proceso",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
       },
     });
+    //    localStorage.setItem("orderId", orderId.current);
+
+    setDsblConfirm(true);
   };
+
+  /*   useEffect(() => {
+    if (mutation.isSuccess) {
+      console.log(mutation.data.orderId);
+      setOrderId(mutation?.data?.orderId);
+      //orderId = mutation?.data?.orderId;
+      setHasOrder(true);
+    }
+  }, []); */
 
   return (
     <Box w={"450px"} px={4}>
@@ -168,7 +204,13 @@ export const OrderSheet = () => {
                   id="datafono"
                 />
               </HStack>
-              <Button type="submit" w={"full"} mt={4} colorScheme="blue">
+              <Button
+                type="submit"
+                w={"full"}
+                mt={4}
+                colorScheme="blue"
+                isDisabled={dsblConfirm}
+              >
                 confirmar pedido
               </Button>
             </form>
@@ -184,6 +226,7 @@ export const OrderSheet = () => {
           </VStack>
         </CardFooter>
       </Card>
+      {mutation?.isSuccess && <ProgressOrder orderId={orderId.current} />}
     </Box>
   );
 };

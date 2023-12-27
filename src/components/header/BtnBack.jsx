@@ -1,14 +1,9 @@
-import {
-  Button,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuGroup,
-  MenuItem,
-  MenuList,
-} from "@chakra-ui/react";
-import { MdArrowBackIosNew } from "react-icons/md";
-import { BsMenuUp } from "react-icons/bs";
+import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+//import { MdArrowBackIosNew } from "react-icons/md";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
+//import { BsMenuUp } from "react-icons/bs";
+import { IoMenu } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 export const BtnBack = () => {
   const location = useLocation();
@@ -26,10 +21,10 @@ export const BtnBack = () => {
   return (
     <>
       <Button
-        leftIcon={<MdArrowBackIosNew />}
+        leftIcon={<IoMdArrowRoundBack />}
         variant="ghost"
         colorScheme="blue"
-        size="sm"
+        size="lg"
         display={bk}
         onClick={() => navigate(-1)}
       />
@@ -37,9 +32,9 @@ export const BtnBack = () => {
       <Menu>
         <MenuButton
           as={Button}
-          leftIcon={<BsMenuUp />}
+          leftIcon={<IoMenu />}
           colorScheme="blue"
-          size="sm"
+          size="md"
           variant={"solid"}
           display={mn}
         />
