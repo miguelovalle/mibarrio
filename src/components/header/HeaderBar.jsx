@@ -16,7 +16,6 @@ export const HeaderBar = () => {
   const [reach, setReach] = useState(false);
 
   const query = { coords, setCoords, reach, setReach };
-  
 
   const navigate = useNavigate();
 

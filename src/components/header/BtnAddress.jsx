@@ -16,12 +16,10 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { BsFillCaretDownFill } from "react-icons/bs";
-import { useQueryClient } from "@tanstack/react-query";
 import { AddressModal } from "../address/AddressModal";
+import { useUserDetail } from "../../hooks/loginHooks";
 
 export const BtnAddress = ({ setCoords }) => {
-  //  let addressValue;
-
   const btnRef = useRef();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,11 +30,11 @@ export const BtnAddress = ({ setCoords }) => {
 
   const [addrText, setaddrText] = useState(addressValue);
 
-  const queryClient = useQueryClient();
+  const uid = localStorage.getItem("userId");
 
-  const userData = queryClient.getQueryData(["user"]);
+  const user = useUserDetail(uid);
 
-  const addresses = userData?.userInf?.address;
+  const addresses = user?.data?.userInf?.address;
 
   const handleInsert = () => {
     setshowModal(true);
@@ -104,7 +102,7 @@ export const BtnAddress = ({ setCoords }) => {
       <AddressModal
         showModal={showModal}
         setshowModal={setshowModal}
-        id={userData?.userInf?._id}
+        id={user?.data?.userInf?._id}
         addresses={addresses}
       />
     </Box>

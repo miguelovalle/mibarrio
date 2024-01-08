@@ -25,7 +25,7 @@ export const ProductList = () => {
 
   //const queryClient = useQueryClient();
 
-  //const user = queryClient.getQueryData(["login"]);
+  //const z = queryClient.getQueryData(["login"]);
 
   const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ export const ProductList = () => {
   const handleOrder = () => {
     sessionStorage.setItem("order", JSON.stringify(orderList));
     sessionStorage.setItem("commerceId", JSON.stringify(product.commerce));
-    const userid = localStorage.getItem("id");
+    const userid = localStorage.getItem("userId");
     userid ? navigate("/order") : setShowDialog(true);
   };
 

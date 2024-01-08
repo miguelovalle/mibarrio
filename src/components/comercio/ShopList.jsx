@@ -3,6 +3,7 @@ import { Image, Text, Flex, VStack, Spinner } from "@chakra-ui/react";
 import { useShopList } from "../../hooks/shopHooks";
 import { useOutletContext } from "react-router-dom";
 import { Categories } from "../comercio/Categories";
+import { ProgressOrder } from "../product/render/ProgressOrder";
 
 export const ShopList = () => {
   const query = useOutletContext();
@@ -14,7 +15,12 @@ export const ShopList = () => {
     reach
   );
   const shopsFiltered = data?.commerces;
-
+  const orderId = localStorage.getItem("orderId");
+  const dateOrderstr = localStorage.getItem("dateOrder");
+  const dateOrder = new Date(dateOrderstr).setHours(0, 0, 0, 0);
+  const todaydate = new Date().setHours(0, 0, 0, 0);
+console.log(dateOrder)
+console.log(todaydate)
   if (isLoading) {
     return <Spinner />;
   }
@@ -27,6 +33,9 @@ export const ShopList = () => {
     return (
       <Flex direction="column" w="full">
         <Categories setCategory={setCategory} />
+        {dateOrder && dateOrder === todaydate ? (
+          <ProgressOrder orderId={orderId} />
+        ) : null}
         <Flex wrap="wrap">
           {shopsFiltered?.map((negocio) => (
             <Flex

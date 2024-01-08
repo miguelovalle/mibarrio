@@ -9,6 +9,7 @@ export const useLogin = (mail, hasMail) => {
       { mail: mail.email, password: mail.password },
       "POST"
     );
+
     const data = await resp.json();
     return data;
   };

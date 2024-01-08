@@ -1,12 +1,12 @@
-import { useReducer } from 'react';
-import { aggregateReducer } from '../reducers/aggregateReducer';
-let newList
-export const useAggregates = prevList => {
+import { useReducer } from "react";
+import { aggregateReducer } from "../reducers/aggregateReducer";
+let newList;
+export const useAggregates = (prevList) => {
   const [itemState, dispatch] = useReducer(aggregateReducer, prevList);
-  
+
   const handleSumItem = () => {
-  newList = itemState.map(item =>
-      item.map(obj => {
+    newList = itemState.map((item) =>
+      item.map((obj) => {
         if (obj.id === newList.id) {
           return {
             ...obj,
@@ -16,11 +16,11 @@ export const useAggregates = prevList => {
         return obj;
       })
     );
-   // settotalList(prevList.current);
+    // settotalList(prevList.current);
     //console.log('state luego de click', totalList);
 
     const action = {
-      type: 'QTY_SUM',
+      type: "QTY_SUM",
       payload: newList,
     };
 
@@ -28,7 +28,7 @@ export const useAggregates = prevList => {
   };
   const handleRestItem = () => {
     const action = {
-      type: 'QTY_REST',
+      type: "QTY_REST",
       payload: itemState,
     };
 

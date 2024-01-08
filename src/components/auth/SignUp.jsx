@@ -33,7 +33,7 @@ export const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("id");
+  const userId = localStorage.getItem("userId");
 
   const resultUserbyId = useUserDetail(userId);
 
@@ -98,7 +98,7 @@ export const SignUp = () => {
             duration: 5000,
             isClosable: true,
           });
-          localStorage.setItem("id", data.uid);
+          localStorage.setItem("userId", data.uid);
           navigate("/shops");
         },
       }

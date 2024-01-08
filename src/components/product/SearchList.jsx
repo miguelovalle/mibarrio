@@ -50,7 +50,6 @@ export const SearchList = () => {
     });
   };
 
-
   isSuccess && data?.ok === true ? (result = data?.products) : (result = []);
 
   const showProduct = () => {
@@ -59,7 +58,7 @@ export const SearchList = () => {
 
   const handleOrder = () => {
     sessionStorage.setItem("order", JSON.stringify(orderList));
-    const userid = localStorage.getItem("id");
+    const userid = localStorage.getItem("userId");
     userid ? navigate("/order") : setShowDialog(true);
   };
 

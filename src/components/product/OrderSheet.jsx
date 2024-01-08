@@ -13,6 +13,7 @@ import {
   VStack,
   useToast,
   StackDivider,
+  Divider,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { numberFormat } from "../../components/helpers/numberFormat";
@@ -54,15 +55,10 @@ export const OrderSheet = () => {
   };
 
   if (mutation.isSuccess) {
-    //    console.log(mutation.data.orderId);
-    //    localStorage.setItem("orderId", mutation?.data?.orderId);
     orderId.current = mutation?.data?.orderId;
     localStorage.setItem("orderId", orderId.current);
-    //setOrderId(mutation?.data?.orderId);
-    //orderId = mutation?.data?.orderId;
-    //setHasOrder(true);
+    localStorage.setItem("dateOrder", new Date());
   }
-  //orderId && setDsblConfirm(true);
 
   const onSubmit = (event) => {
     event.cash
@@ -93,37 +89,42 @@ export const OrderSheet = () => {
     setDsblConfirm(true);
   };
 
-  /*   useEffect(() => {
-    if (mutation.isSuccess) {
-      console.log(mutation.data.orderId);
-      setOrderId(mutation?.data?.orderId);
-      //orderId = mutation?.data?.orderId;
-      setHasOrder(true);
-    }
-  }, []); */
-
   return (
-    <Box w={"450px"} px={4}>
+    <Box w={[450, 800]} px={4}>
       <Card bgColor={"gray.50"} mb={4}>
         <CardHeader>
-          <Flex
-            bg={"orange.200"}
-            p={4}
-            m={4}
-            justifyContent={"center"}
-            align={"center"}
-          >
-            <Button
-              leftIcon={<IoMdReturnLeft />}
-              variant="solid"
-              borderRadius={"full"}
-              size={"sm"}
-              colorScheme="blue"
-              onClick={() => navigate(-2)}
-            />
-            <Spacer />
-            <Heading size="sm" color={"blue.700"}>
-              {name} Confirmemos su Pedido
+          <Flex bg={"orange.200"} p={4} m={4} direction={"column"}>
+            <Flex direction={"row"} justifyContent={"center"}>
+              <Button
+                leftIcon={<IoMdReturnLeft />}
+                variant="solid"
+                borderRadius={"full"}
+                size={"sm"}
+                mx={4}
+                colorScheme="blue"
+                onClick={() => navigate(-2)}
+              />
+              <Heading
+                display={"flex"}
+                size={["sm", "lg"]}
+                color={"blue.700"}
+                flexWrap={"wrap"}
+                alignContent={"center"}
+              >
+                {name}
+              </Heading>
+            </Flex>
+
+            <Heading
+              as={"h3"}
+              display={"flex"}
+              flexWrap={"wrap"}
+              size={["sm", "lg"]}
+              color={"blue.700"}
+              justifyContent={"center"}
+            >
+              Confirmemos su
+               Pedido
             </Heading>
           </Flex>
         </CardHeader>
@@ -165,7 +166,9 @@ export const OrderSheet = () => {
 
         <CardFooter>
           <VStack mb={4} fontSize={"sm"} justify={"center"}>
-            <Box justifyContent={"center"}>Paga con: </Box>
+            <Box display={"flex"} w={[350, 600]} justifyContent={"center"}>
+              Llevar cambio de:{" "}
+            </Box>
             <form onSubmit={handleSubmit(onSubmit)} my={4}>
               <HStack>
                 <label htmlFor="cien">Cien</label>

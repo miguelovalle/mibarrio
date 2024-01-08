@@ -3,6 +3,7 @@ import { fetchSinToken } from "../components/helpers/fetch";
 
 export const useShopList = (category, coords, reach) => {
   const shoplist = async () => {
+    
     const resp = await fetchSinToken(
       "commerce/list",
       { category, coords, reach },
